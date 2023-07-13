@@ -9,13 +9,6 @@ typedef string str;
 
 const int LOWER_LIMIT_OF_MIN_SECTION_SIZE = 0;
 
-/*
-w = main width
-h = main height
-mW or m_w = minimum width
-mH or m_h = minimum height
-*/
-
 void Query(str desiredSizeName) {
     cout << "Please enter the " << desiredSizeName << " pixel size as an integer: ";
     return;
@@ -72,10 +65,11 @@ void GetMinSectionPixelSize(big& valueToCompare, big& desiredMinSize, str desire
     return;
 }
 
-big CalcPossibleSectionNumForkxt(big a, big b, big k, big t) {  // a and b are main values, and k and t are minimum values
+// k and t are minimum values
+big CalcPossibleSectionNumForkxt(big mainWidthParam, big mainHeightParam, big k, big t) {
 
-    big aCons = a - k;
-    big bCons = b - t;
+    big aCons = mainWidthParam - k;
+    big bCons = mainHeightParam - t;
 
     return (aCons + 1) * (aCons + 2) * (bCons + 1) * (bCons + 2) / 4;
 
@@ -88,22 +82,29 @@ big CalcPossibleSectionNumForkxt(big a, big b, big k, big t) {  // a and b are m
 // Please use this order for correct result.
 // The values for main width / minimum width and main height / minimum height are in the order you wrote while getting input, using the classic size order (width x height).
 
-big CalcPossibleSectionNumForMWxMH(big w, big h, big mW, big mH) {  // These values order are checked while getting the input, so there is no need for an additional control system.
-    return CalcPossibleSectionNumForkxt(w, h, mW, mH);  // k parameter equals to min width value, and t parameter equals to min height value
+big CalcPossibleSectionNumForMinWidthxMinHeight(big mainWidthParam, big mainHeightParam, big minWidthParam, big minHeightParam) {  // These values order (minWidthParam, minHeightParam) are checked while getting the input, so there is no need for an additional control system.
+    return CalcPossibleSectionNumForkxt(mainWidthParam, mainHeightParam, minWidthParam, minHeightParam);  // k parameter equals to minWidthParam, and t parameter equals to minHeightParam
 }
 
-big CalcPossibleSectionNumForMHxMW(big w, big h, big mW, big mH) {  // After the values are swapped, an additional control system is needed.
-    if((mW < mH && mH > w) || (mH < mW && mW > h)) {  // if mW == mH, it can be calculated because we check when getting input.
+big CalcPossibleSectionNumForMinHeightxMinWidth(big mainWidthParam, big mainHeightParam, big minWidthParam, big minHeightParam) {  // After the values are swapped, an additional control system is needed.
+    if((minWidthParam < minHeightParam && minHeightParam > mainWidthParam) || (minHeightParam < minWidthParam && minWidthParam > mainHeightParam)) {  // if minWidthParam == minHeightParam, it can be calculated because we check when getting input.
         return 0;
-    } else return CalcPossibleSectionNumForkxt(w, h, mH, mW);  // k parameter equals to min height value, and t parameter equals to min width value
+    } else return CalcPossibleSectionNumForkxt(mainWidthParam, mainHeightParam, minHeightParam, minWidthParam);  // k parameter equals to minHeightParam, and t parameter equals to minWidthParam
 }
 
 /*
-mW < mH    mH > w    mH <= w    mH < mW    mW > h    mW <= h    (mW < mH) ∧ (mH > w)    (mW < mH) ∧ (mH <= w)    (mH < mW) ∧ (mW > h)    (mH < mW) ∧ (mW <= h)    ((mW < mH) ∧ (mH > w)) ∨ ((mH < mW) ∧ (mW > h))
-   T          T          F          F          F        T                 T                       F                        F                       F                                     T
-   T          F          T          F          T        F                 F                       T                        F                       F                                     F
-   F          F          T          T          T        F                 F                       F                        T                       F                                     T
-   F          T          F          T          F        T                 F                       F                        F                       T                                     F
+w = main width
+h = main height
+mw = minimum width
+mh = minimum height
+*/
+
+/*
+mw < mh    mh > w    mh <= w    mh < mw    mw > h    mw <= h    (mw < mh) ∧ (mh > w)    (mw < mh) ∧ (mh <= w)    (mh < mw) ∧ (mw > h)    (mh < mw) ∧ (mw <= h)    ((mw < mh) ∧ (mh > w)) ∨ ((mh < mw) ∧ (mw > h))
+   T          T          F         F          F         T                 T                       F                        F                       F                                     T
+   T          F          T         F          T         F                 F                       T                        F                       F                                     F
+   F          F          T         T          T         F                 F                       F                        T                       F                                     T
+   F          T          F         T          F         T                 F                       F                        F                       T                                     F
 */
 
 /*
@@ -114,37 +115,37 @@ we cannot determine whether the condition in the if block inside the else block 
 However, we can reduce these conditions. The reduction is indicated in the comments next to the if and else-if blocks.
 */
 
-big CalcAllPossibleSectionNumber(big w, big h, big mW, big mH) {
-    big all_possible_section_num = CalcPossibleSectionNumForMWxMH(w, h, mW, mH);  // initial
-    big control_value = CalcPossibleSectionNumForMHxMW(w, h, mW, mH);
+big CalcAllPossibleSectionNumber(big mainWidthParam, big mainHeightParam, big minWidthParam, big minHeightParam) {
+    big all_possible_section_num = CalcPossibleSectionNumForMinWidthxMinHeight(mainWidthParam, mainHeightParam, minWidthParam, minHeightParam);  // initial
+    big control_value = CalcPossibleSectionNumForMinHeightxMinWidth(mainWidthParam, mainHeightParam, minWidthParam, minHeightParam);
     if(control_value == 0) return all_possible_section_num;
     else {
         all_possible_section_num += control_value;
-        if(mW < mH) {  // instead of mW < mH && mH <= w
-            all_possible_section_num -= CalcPossibleSectionNumForkxt(w, h, mH, mH);  // min1 & min2 parameters equal to min width value
-        } else if (mH < mW) {  // instead of mH < mW && mW <= h
-            all_possible_section_num -= CalcPossibleSectionNumForkxt(w, h, mW, mW);  // min1 & min2 parameters equal to min height value
+        if(minWidthParam < minHeightParam) {  // instead of minWidthParam < minHeightParam && minHeightParam <= mainWidthParam
+            all_possible_section_num -= CalcPossibleSectionNumForkxt(mainWidthParam, mainHeightParam, minHeightParam, minHeightParam);  // k & t parameters equal to minWidthParam
+        } else if (minHeightParam < minWidthParam) {  // instead of minHeightParam < minWidthParam && minWidthParam <= mainHeightParam
+            all_possible_section_num -= CalcPossibleSectionNumForkxt(mainWidthParam, mainHeightParam, minWidthParam, minWidthParam);  // k & t parameters equal to minHeightParam
         }
     }
     return all_possible_section_num;
 }
 
 int main() {
-    big w, h, m_w, m_h;
+    big main_width, main_height, min_width, min_height;
 
-    Query("width");
-    GetMainPixelSize(w);
-    Query("height");
-    PixelSizeControl(h);
-    GetMinSectionPixelSize(w, m_w, "minimum width");
-    GetMinSectionPixelSize(h, m_h, "minimum height");
+    Query("main width");
+    GetMainPixelSize(main_width);
+    Query("main height");
+    PixelSizeControl(main_height);
+    GetMinSectionPixelSize(main_width, min_width, "minimum width");
+    GetMinSectionPixelSize(main_height, min_height, "minimum height");
 
-    big possible_section_num_for_mwxmh = CalcPossibleSectionNumForMWxMH(w, h, m_w, m_h);
-    big possible_section_num_for_mhxmw = CalcPossibleSectionNumForMHxMW(w, h, m_w, m_h);
-    big all_possible_section_num = CalcAllPossibleSectionNumber(w, h, m_w, m_h);
+    big possible_section_num_for_minwidth_x_minheight = CalcPossibleSectionNumForMinWidthxMinHeight(main_width, main_height, min_width, min_height);
+    big possible_section_num_for_minheight_x_minwidth = CalcPossibleSectionNumForMinHeightxMinWidth(main_width, main_height, min_width, min_height);
+    big all_possible_section_num = CalcAllPossibleSectionNumber(main_width, main_height, min_width, min_height);
 
-    cout << "Number of possible section number for minWidthxminHeight: " << possible_section_num_for_mwxmh.to_string() << endl;
-    cout << "Number of possible section number for minHeightxminWidth: " << possible_section_num_for_mhxmw.to_string() << endl;
+    cout << "Number of possible section number for min_width x min_height: " << possible_section_num_for_minwidth_x_minheight.to_string() << endl;
+    cout << "Number of possible section number for min_height x min_width: " << possible_section_num_for_minheight_x_minwidth.to_string() << endl;
     cout << "Number of all possible sections: " << all_possible_section_num.to_string() << endl;
     return 0;
 }
