@@ -315,7 +315,8 @@ https://twitter.com/EjderAysunn/status/1674883836935561217
 
 While examining the masterpiece below, I noticed that regardless of where I take a section at least 480x270 or 270x480 pixel size (this minimum reference size can be larger or smaller according to your preference), each section maintained its style and did not compromise its essence. In other words, every piece extracted from this masterpiece, meeting the minimum size requirement, was without exception a masterpiece in itself. This led me to wonder how many masterpieces were hidden within this masterpiece, prompting me to conduct this study.
 
-Adoration of Pan, by Johfra Bosschart, oil on panel, 1979
+### Adoration of Pan, by Johfra Bosschart, oil on panel, 1979  
+
 ![The_Adoration_of_Pan](https://github.com/EjderAysun/algorithm-for-counting-all-possible-sections-that-have-a-min-pixel-size-of-axb-and-bxa-in-artworks/assets/71559273/d13f30b0-aab8-454f-a4fb-6ec9ddce20d1)
 ![randomly_sectioned_adoration_of_pan](https://github.com/EjderAysun/algorithm-for-counting-all-possible-sections-that-have-a-min-pixel-size-of-axb-and-bxa-in-artworks/assets/71559273/55d2d62d-099a-44de-b0bb-f83827177983)
 ---
