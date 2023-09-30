@@ -319,6 +319,7 @@ While examining the masterpiece below, I noticed that regardless of where I take
 
 ![The_Adoration_of_Pan](https://github.com/EjderAysun/algorithm-for-counting-all-possible-sections-that-have-a-min-pixel-size-of-axb-and-bxa-in-artworks/assets/71559273/d13f30b0-aab8-454f-a4fb-6ec9ddce20d1)
 ![randomly_sectioned_adoration_of_pan](https://github.com/EjderAysun/algorithm-for-counting-all-possible-sections-that-have-a-min-pixel-size-of-axb-and-bxa-in-artworks/assets/71559273/55d2d62d-099a-44de-b0bb-f83827177983)
+
 ---
 ## Version
 **Version 1.0.0**  
